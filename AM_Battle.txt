@@ -21,49 +21,39 @@ int cwc ();
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 //  8x8 array
 
-int i = 0, j = 0;
-
-
-//
-int delayval = 50; // delay for half a second
-
 void setup() {
   Serial.begin(9600);      //ser up Serial.*
-    randomSeed(analogRead(0));
+  randomSeed(analogRead(0));
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
-#if defined (__AVR_ATtiny85__)
-  if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
-#endif
+  #if defined (__AVR_ATtiny85__)
+    if (F_CPU == 16000000) clock_prescale_set(clock_div_1);
+  #endif
   // End of trinket special code
-
   pixels.begin(); // This initializes the NeoPixel library.
 }
-
+//  main loop ***  Add functions here. *********************************************************
 void loop() {
-clearPix();cwc(); 
-//clearPix(); delay(1000); two();  delay(1000);
-
-  
+clearPix();cwc();   delay(3000);
+clearPix(); two();  delay(3000);
 }
+//  end of main loop *********************************************************
 
-//start clearPix()
+//start clearPix() *********************************************************
 int clearPix (){
   for(int i=0;i<NUMPIXELS;i++){
       pixels.setPixelColor(i, pixels.Color(0,0,0)); 
     }
     pixels.show();
   }
-//emd clearPix
+//end clearPix  *********************************************************
 
-
-//////////////////////////////////////////////////////////
-int cwc(){
-//ser base color
-int x,y;
-int r,c;//row and column
-int red = 0, green = 0, blue = 0;
-int totalBombs = 0;
-//change this array use 0 as the water
+// start CWC *********************************************************
+  int cwc(){
+  int i, val, newint, countColors, r,c,x,y
+  int done = 0;
+  int red = 0, green = 0, blue = 0;
+  int totalBombs = 0;
+//change this array use 1 as the water
 int m[8][8] = {  
     {1,2,2,1,1,1,1,1} ,
     {1,1,1,1,1,1,1,1} ,
@@ -84,38 +74,116 @@ int s[8][8] = {
     {0,0,0,0,0,0,0,0} ,
     {0,0,0,0,0,0,0,0}
 };
- 
-  int val;
-//  loop that increments x,y and i
-int done = 0;
-int newhit;  //  this will determine if there is a unigue shot
-int countColors;
-
-do{
-  //check for sunk ships
-     countColors = 0;;// check for no boats and water
-    for (r = 0; r < 8; r++){
-      for (c = 0; c < 8; c++){
-          if(m[r][c] > 1)countColors++;
-      }
-    }
-//    if(totalBombs % 30 == 0)Serial.println();
-//    Serial.print(countColors);
-    if (countColors == 0){done = 1;}
-    
-  //end check for sunk ships
+while(done == 0){
    i = 0;// set neo-pixel number to zero
+  countColors = 0;;// set count colors to 0 to count bomb hits
+  for (r = 0; r < 8; r++){
+    for (c = 0; c < 8; c++){
+      // set the color for red green and blue using a switch statement
+      // *********************************************************
+      val = m[r][c];
+      switch ( val ) {
+          case -1://hit ship  (PINK)
+            red = 25; green = 15; blue = 20;
+          break;
+          case 0://hit water  (BLACK)
+            red = 0; green = 0; blue = 0;
+          break;
+          case 1://water  (BLUE)
+            red = 0; green = 0; blue =70;
+          break;
+           case 2://ships are 2,3,4, and 5
+          red = 0; green = 50; blue =0;
+          break;
+            case 3:
+          red = 50; green = 25; blue =0;
+          break;
+            case 4:
+          red = 25; green = 50; blue =0;
+          break;
+          case 5:
+          red =32; green = 32; blue =1;
+          break;
+          default:
+          red = 0; green = 0; blue = 0;
+          break;
+    }//end switch
+      // end of set the color *********************************************************
+      pixels.setPixelColor(i, pixels.Color(red,green,blue));
+      pixels.show(); 
+      i++;
+       if(val > 1)countColors++;//count is a color is a boat
+    }//end c
+}//end r    
+   if (countColors == 0){done = 1;}  // this check if all the boats were hit
+ 
+//generate random numbers
+  newhit =0;
+  while((newhit == 0)&& (countColors != 0)){
+    x= random(8);
+    y = random(8);
+    if( s[x][y]== 0){
+        s[x][y] = 1;
+        newhit = 1;
+        totalBombs++;
+    }
+  }//end generating random numbers
+
+    if ( m[x][y] == 1){  m[x][y] = 0;}  //set a hit to 0 when hitting water
+    if ( m[x][y]> 1) { m[x][y] = -1;}  //set a hit to -1 whren hitting a boat
+   
+    }//end while
+    Serial.print("cwc Total Bombs = ");  //type your intials here
+    Serial.println(totalBombs);
+ 
+}//end cwc *******************************************************************
+
+// two *******************************************************************
+  int two(){
+  int i;
+  int done = 0;
+  int val;
+  int newhit;  //  this will determine if there is a unigue shot
+  int countColors;
+  int x,y;
+  int r,c;//row and column
+  int red = 0, green = 0, blue = 0;
+  int totalBombs = 0;
+//change this array use 0 as the water
+int m[8][8] = {  
+    {1,2,2,1,1,1,1,5} ,
+    {3,1,1,1,1,1,1,5} ,
+    {3,1,1,1,1,1,1,5} ,
+    {3,1,1,1,1,1,1,5} ,
+    {1,1,1,1,1,1,1,5} ,
+    {1,1,1,1,1,1,1,5} ,
+    {1,1,1,1,1,1,1,3},
+    {4,4,4,4,1,1,1,3}   
+};
+int s[8][8] = {  
+    {0,0,0.0,0,0,0,0} ,
+    {0,0,0,0,0,0,0,0} ,
+    {0,0,0,0,0,0,0,0} ,
+    {0,0,0,0,0,0,0,0} ,
+    {0,0,0,0,0,0,0,0} ,
+    {0,0,0,0,0,0,0,0} ,
+    {0,0,0,0,0,0,0,0} ,
+    {0,0,0,0,0,0,0,0}
+};
+ 
+while(done == 0){
+   i = 0;// set neo-pixel number to zero
+  countColors = 0;;// check for no boats and water
   for (r = 0; r < 8; r++){
     for (c = 0; c < 8; c++){
       // set the color for red green and blue
-      // you can change colors here
-// a hit will be “1”
+      // **************************************************************
       val = m[r][c];
       switch ( val ) {
-          case -1://hit ship  (BLACK)
-            red = 255; green = 0; blue = 0;
+          case -1://hit ship  (PINK)
+            red = 25; green = 15; blue = 20;
           break;
-          case 0://hit water  (RED)
+          case 0://hit water  (BLACK)
             red = 0; green = 0; blue = 0;
           break;
           case 1://water  (BLUE)
@@ -136,21 +204,19 @@ do{
           default:
           red = 0; green = 0; blue = 0;
           break;
-}
-      
-      
-      // end of set the color
+    }//end switch
+      // end of set the color *************************************************
       pixels.setPixelColor(i, pixels.Color(red,green,blue));
- 
       pixels.show(); 
       i++;
-     // delay(10);
-     //Serial.print(c[x][y]);
-    }//end y
-}//end y and end of loop that increments x,y and i  
+       if(val > 1)countColors++;
+    }//end c
+}//end r    
+   if (countColors == 0){done = 1;}
+ 
 //generate random numbers
   newhit =0;
-  while(newhit == 0){
+  while((newhit == 0)&& (countColors != 0)){
     x= random(8);
     y = random(8);
     if( s[x][y]== 0){
@@ -159,16 +225,13 @@ do{
         totalBombs++;
     }
   }//end while newhit
-//Serial.print(x); Serial.print(" ");Serial.println(y);
+
     if ( m[x][y] == 1){  m[x][y] = 0;}
     if ( m[x][y]> 1) { m[x][y] = -1;}
    
-    }while(done == 0);
-     Serial.print("cwc Total Bombs = ");
-          Serial.println(totalBombs);
+    }//end while
+    Serial.print("tw0 Total Bombs = ");
+    Serial.println(totalBombs);
+ 
+}//end two
 
-
-}//end cwc
-
-
-/////////////////////////////////////////////////////////////////////////////////////
