@@ -49,7 +49,7 @@ int clearPix (){
 
 // start CWC *********************************************************
   int cwc(){
-  int i, val, newint, countColors, r,c,x,y
+  int i, val, newhit, countColors, r,c,x,y;
   int done = 0;
   int red = 0, green = 0, blue = 0;
   int totalBombs = 0;
@@ -230,8 +230,7 @@ while(done == 0){
     if ( m[x][y]> 1) { m[x][y] = -1;}
    
     }//end while
-    Serial.print("tw0 Total Bombs = ");
+    Serial.print("two Total Bombs = ");
     Serial.println(totalBombs);
  
 }//end two
-
