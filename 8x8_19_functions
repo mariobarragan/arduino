@@ -34,7 +34,27 @@ void setup() {
 //  main loop ***  Add functions here. *********************************************************
 void loop() {
 clearPix();cwc();   delay(3000);
+clearPix(); one();  delay(3000);
 clearPix(); two();  delay(3000);
+clearPix(); three();  delay(3000);
+clearPix(); four();  delay(3000);
+clearPix(); two();  delay(3000);
+clearPix(); five();  delay(3000);
+clearPix(); six();  delay(3000);
+clearPix(); seven();  delay(3000);
+clearPix(); eight();  delay(3000);
+clearPix(); nine();  delay(3000);
+clearPix(); ten();  delay(3000);
+clearPix(); eleven();  delay(3000);
+clearPix(); twelve();  delay(3000);
+clearPix(); thirteen();  delay(3000);
+clearPix(); fourteen();  delay(3000);
+clearPix(); sixteen();  delay(3000);
+clearPix(); seventeen();  delay(3000);
+clearPix(); eighteen();  delay(3000);
+clearPix(); nineteen();  delay(3000);
+clearPix(); twenty();  delay(3000);
+
 }
 //  end of main loop *********************************************************
 
@@ -1898,3 +1918,9 @@ while(done == 0){
     Serial.println(totalBombs);
  
 }//end eighteen
+
+int nineteen(){
+}
+
+int twenty(){
+}
